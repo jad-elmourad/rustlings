@@ -23,7 +23,6 @@ enum IntoColorError {
     IntConversion,
 }
 
-// I AM NOT DONE
 
 // Your task is to complete this implementation
 // and return an Ok result of inner type Color.
@@ -35,9 +34,32 @@ enum IntoColorError {
 // Also note that correct RGB color values must be integers in the 0..=255 range.
 
 // Tuple implementation
+
+fn get_u8(num: i16) -> Result<u8, IntoColorError> {
+    if num < 0 || num > 255 {
+        return Err(IntoColorError::IntConversion)
+    }
+    Ok(num as u8)
+}
+
 impl TryFrom<(i16, i16, i16)> for Color {
     type Error = IntoColorError;
     fn try_from(tuple: (i16, i16, i16)) -> Result<Self, Self::Error> {
+        let (r, g, b) = tuple;
+        Ok(Color {
+            red: match get_u8(r) {
+                Ok(num) => num,
+                Err(e) => return Err(e)
+                },
+            green: match get_u8(g) {
+                Ok(num) => num,
+                Err(e) => return Err(e)
+                },
+            blue: match get_u8(b) {
+                Ok(num) => num,
+                Err(e) => return Err(e)
+                },
+        })
     }
 }
 
@@ -45,6 +67,22 @@ impl TryFrom<(i16, i16, i16)> for Color {
 impl TryFrom<[i16; 3]> for Color {
     type Error = IntoColorError;
     fn try_from(arr: [i16; 3]) -> Result<Self, Self::Error> {
+        let [r, g, b] = arr;
+        Ok(Color {
+            red: match get_u8(r) {
+                Ok(num) => num,
+                Err(e) => return Err(e)
+                },
+            green: match get_u8(g) {
+                Ok(num) => num,
+                Err(e) => return Err(e)
+                },
+            blue: match get_u8(b) {
+                Ok(num) => num,
+                Err(e) => return Err(e)
+                },
+        })
+
     }
 }
 
@@ -52,6 +90,28 @@ impl TryFrom<[i16; 3]> for Color {
 impl TryFrom<&[i16]> for Color {
     type Error = IntoColorError;
     fn try_from(slice: &[i16]) -> Result<Self, Self::Error> {
+        if slice.len() != 3 {
+            return Err(IntoColorError::BadLen)
+        };
+        let mut items = slice.iter();
+        let r = items.next().unwrap();
+        let g = items.next().unwrap();
+        let b = items.next().unwrap();
+
+        Ok(Color {
+            red: match get_u8(*r) {
+                Ok(num) => num,
+                Err(e) => return Err(e)
+                },
+            green: match get_u8(*g) {
+                Ok(num) => num,
+                Err(e) => return Err(e)
+                },
+            blue: match get_u8(*b) {
+                Ok(num) => num,
+                Err(e) => return Err(e)
+                },
+        })
     }
 }
 
